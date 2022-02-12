@@ -15,8 +15,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ByOrderIdRequest implements Serializable {
+public class DeleteByOrderIdRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private long idd;
+	private long id;
 }

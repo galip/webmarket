@@ -24,6 +24,5 @@ public class CreateOrderRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long customerId;
-	private String status;
 	List<OrderDetailDto> orderDetails;
 }

@@ -8,15 +8,17 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ecommerce.dto.OrderDetailDto;
-import com.ecommerce.enums.PaymentStatusEnum;
+import com.ecommerce.enums.StatusEnum;
 import com.ecommerce.exception.WebMarketException;
 import com.ecommerce.model.Order;
 import com.ecommerce.model.OrderDetail;
 import com.ecommerce.repository.OrderDetailRepository;
 import com.ecommerce.repository.OrderRepository;
 import com.ecommerce.request.CreateOrderRequest;
+import com.ecommerce.request.DeleteByOrderIdRequest;
 import com.ecommerce.service.OrderService;
 
 import lombok.AllArgsConstructor;
@@ -39,12 +41,13 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Order createOrder(CreateOrderRequest request) throws WebMarketException {
+	@Transactional
+	public Order create(CreateOrderRequest request) throws WebMarketException {
 		Order order = new Order();
 		order.setCustomerId(request.getCustomerId());
-		order.setCreatedUser("session");
+		order.setCreatedUser("createSessionUser");
 		order.setCreatedDate(new Date());
-		order.setStatus(PaymentStatusEnum.NOT_PAID.name());
+		order.setStatus(StatusEnum.ACTIVE.name());
 		order.setTotalPrice(calculateTotalOrderFee(request.getOrderDetails()));
 		order = orderRepository.save(order);
 
@@ -62,7 +65,6 @@ public class OrderServiceImpl implements OrderService {
 
 			orderDetails.add(orderDetail);
 		}
-
 		orderDetails = orderDetailRepository.saveAll(orderDetails);
 
 		return order;
@@ -71,11 +73,22 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public Optional<Order> getOrderDetailsByOrderId(Long id) throws WebMarketException {
 
-		return orderRepository.findById(id);
+		return orderRepository.findByIdAndStatus(id, StatusEnum.ACTIVE.name());
 	}
 
 	private BigDecimal calculateTotalOrderFee(List<OrderDetailDto> orderDetails) throws WebMarketException {
 		return orderDetails.stream().map(o -> o.getPrice().multiply(BigDecimal.valueOf(o.getQuantity())))
 				.reduce(BigDecimal::add).get();
+	}
+
+	public Order delete(DeleteByOrderIdRequest request) throws WebMarketException {
+		Optional<Order> o = orderRepository.findByIdAndStatus(request.getId(), StatusEnum.ACTIVE.name());
+		Order order = o.isPresent() ? o.get() : null;
+		if (order == null)
+			throw new WebMarketException("ORDER_NOT_FOUND");
+		order.setUpdatedDate(new Date());
+		order.setUpdatedUser("deleteSessionUser");
+		order.setStatus(StatusEnum.PASSIVE.name());
+		return orderRepository.save(order);
 	}
 }

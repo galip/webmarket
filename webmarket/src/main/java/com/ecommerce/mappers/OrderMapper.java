@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ecommerce.dto.CreateOrderDto;
+import com.ecommerce.dto.DeleteOrderDto;
 import com.ecommerce.dto.OrderDetailDto;
 import com.ecommerce.dto.OrderDto;
 import com.ecommerce.model.Order;
@@ -63,5 +64,21 @@ public class OrderMapper {
 		orderDto.setCreatedUser(order.getCreatedUser());
 		orderDto.setCreatedDate(order.getCreatedDate());
 		return orderDto;
+	}
+	
+	public static DeleteOrderDto convertToDeleteOrderDto(Order order) {
+		if (order == null) {
+			return null;
+		}
+		DeleteOrderDto deleteOrderDto = new DeleteOrderDto();
+		deleteOrderDto.setId(order.getId());
+		deleteOrderDto.setCustomerId(order.getCustomerId());
+		deleteOrderDto.setStatus(order.getStatus());
+		deleteOrderDto.setTotalPrice(order.getTotalPrice());
+		deleteOrderDto.setCreatedUser(order.getCreatedUser());
+		deleteOrderDto.setCreatedDate(order.getCreatedDate());
+		deleteOrderDto.setUpdatedDate(order.getUpdatedDate());
+		deleteOrderDto.setUpdatedUser(order.getUpdatedUser());
+		return deleteOrderDto;
 	}
 }
