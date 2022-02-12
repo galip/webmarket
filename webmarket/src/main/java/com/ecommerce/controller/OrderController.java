@@ -17,8 +17,11 @@ import com.ecommerce.constants.ErrorCodes;
 import com.ecommerce.exception.WebMarketException;
 import com.ecommerce.mappers.OrderMapper;
 import com.ecommerce.model.Order;
+import com.ecommerce.request.DeleteByOrderIdRequest;
 import com.ecommerce.request.CreateOrderRequest;
+import com.ecommerce.response.BaseResponse;
 import com.ecommerce.response.CreateOrderResponse;
+import com.ecommerce.response.DeleteOrderResponse;
 import com.ecommerce.response.OrderDetailsByOrderResponse;
 import com.ecommerce.response.OrdersResponse;
 import com.ecommerce.service.OrderService;
@@ -45,6 +48,11 @@ public class OrderController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * @param orderId
+	 * @return active(status = 'ACTIVE') order and order details by orderId. 
+	 * @throws WebMarketException
+	 */
 	@GetMapping("/detailsByOrderId/{id}")
 	@ResponseBody
 	public ResponseEntity<OrderDetailsByOrderResponse> getOrderDetailsById(@PathVariable Long id) throws WebMarketException {
@@ -57,13 +65,34 @@ public class OrderController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * @param request
+	 * @return creates order and order details transactionally.
+	 * @throws WebMarketException
+	 */
 	@PostMapping("/create")
 	@ResponseBody
 	public ResponseEntity<CreateOrderResponse> create(@RequestBody CreateOrderRequest request) throws WebMarketException {
 		CreateOrderResponse response = new CreateOrderResponse();
 		
-		Order order = orderService.createOrder(request);
+		Order order = orderService.create(request);
 		response.setCreateOrderDto(OrderMapper.convertToCreateOrderDto(order));
+		response.setResult(ErrorCodes.success());
+		return ResponseEntity.ok(response);
+	}
+	
+	/**
+	 * @param request
+	 * @return updates status as PASSIVE in order by id.
+	 * @throws WebMarketException
+	 */
+	@PostMapping("/delete")
+	@ResponseBody
+	public ResponseEntity<BaseResponse> delete(@RequestBody DeleteByOrderIdRequest request) throws WebMarketException {
+		DeleteOrderResponse response = new DeleteOrderResponse();
+		
+		Order order = orderService.delete(request);
+		response.setDeleteOrderDto(OrderMapper.convertToDeleteOrderDto(order));
 		response.setResult(ErrorCodes.success());
 		return ResponseEntity.ok(response);
 	}

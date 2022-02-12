@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.ecommerce.exception.WebMarketException;
 import com.ecommerce.model.Order;
 import com.ecommerce.request.CreateOrderRequest;
+import com.ecommerce.request.DeleteByOrderIdRequest;
 
 public interface OrderService {
 
@@ -13,5 +14,7 @@ public interface OrderService {
 	
 	Optional<Order> getOrderDetailsByOrderId(Long id) throws WebMarketException;
 
-	Order createOrder(CreateOrderRequest request) throws WebMarketException;
+	Order create(CreateOrderRequest request) throws WebMarketException;
+	
+	Order delete(DeleteByOrderIdRequest request) throws WebMarketException;
 }
