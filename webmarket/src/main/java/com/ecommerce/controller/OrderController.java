@@ -13,18 +13,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ecommerce.constants.ErrorCodes;
+import com.ecommerce.core.ErrorCodes;
 import com.ecommerce.exception.WebMarketException;
 import com.ecommerce.mappers.OrderMapper;
 import com.ecommerce.model.Order;
-import com.ecommerce.request.DeleteByOrderIdRequest;
 import com.ecommerce.request.CreateOrderRequest;
+import com.ecommerce.request.DeleteByOrderIdRequest;
 import com.ecommerce.response.BaseResponse;
 import com.ecommerce.response.CreateOrderResponse;
 import com.ecommerce.response.DeleteOrderResponse;
 import com.ecommerce.response.OrderDetailsByOrderResponse;
 import com.ecommerce.response.OrdersResponse;
 import com.ecommerce.service.OrderService;
+import com.ecommerce.validator.OrderValidator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,8 +57,8 @@ public class OrderController {
 	@GetMapping("/detailsByOrderId/{id}")
 	@ResponseBody
 	public ResponseEntity<OrderDetailsByOrderResponse> getOrderDetailsById(@PathVariable Long id) throws WebMarketException {
-		if (id == null || id == 0L)
-			throw new WebMarketException("ORDER_NOT_FOUND");
+		OrderValidator.validateId(id);
+		
 		Optional<Order> order = orderService.getOrderDetailsByOrderId(id);
 		OrderDetailsByOrderResponse response = new OrderDetailsByOrderResponse();
 		response.setOrder(OrderMapper.convertToDto(order.isPresent() ? order.get() : null));
@@ -73,9 +74,10 @@ public class OrderController {
 	@PostMapping("/create")
 	@ResponseBody
 	public ResponseEntity<CreateOrderResponse> create(@RequestBody CreateOrderRequest request) throws WebMarketException {
-		CreateOrderResponse response = new CreateOrderResponse();
+		OrderValidator.validateCreateOrderRequest(request);
 		
 		Order order = orderService.create(request);
+		CreateOrderResponse response = new CreateOrderResponse();
 		response.setCreateOrderDto(OrderMapper.convertToCreateOrderDto(order));
 		response.setResult(ErrorCodes.success());
 		return ResponseEntity.ok(response);
@@ -89,9 +91,10 @@ public class OrderController {
 	@PostMapping("/delete")
 	@ResponseBody
 	public ResponseEntity<BaseResponse> delete(@RequestBody DeleteByOrderIdRequest request) throws WebMarketException {
-		DeleteOrderResponse response = new DeleteOrderResponse();
+		OrderValidator.validateDeleteByOrderIdRequest(request);
 		
 		Order order = orderService.delete(request);
+		DeleteOrderResponse response = new DeleteOrderResponse();
 		response.setDeleteOrderDto(OrderMapper.convertToDeleteOrderDto(order));
 		response.setResult(ErrorCodes.success());
 		return ResponseEntity.ok(response);

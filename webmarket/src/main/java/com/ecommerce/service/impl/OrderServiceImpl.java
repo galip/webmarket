@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ecommerce.constants.ErrorCode;
 import com.ecommerce.dto.OrderDetailDto;
 import com.ecommerce.enums.StatusEnum;
 import com.ecommerce.exception.WebMarketException;
@@ -58,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
 
 		for (OrderDetailDto o : orderDetailsDto) {
 			if(o.getQuantity() <= 0) {
-				throw new WebMarketException("QUANTITY_NOT_MORE_THAN_ZERO");
+				throw new WebMarketException(ErrorCode.QUANTITY_NOT_MORE_THAN_ZERO);
 			}
 			OrderDetail orderDetail = new OrderDetail();
 			orderDetail.setOrder(order);
@@ -88,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
 		Optional<Order> o = orderRepository.findByIdAndStatus(request.getId(), StatusEnum.ACTIVE.name());
 		Order order = o.isPresent() ? o.get() : null;
 		if (order == null)
-			throw new WebMarketException("ORDER_NOT_FOUND");
+			throw new WebMarketException(ErrorCode.ORDER_NOT_FOUND);
 		order.setUpdatedDate(new Date());
 		order.setUpdatedUser("deleteSessionUser");
 		order.setStatus(StatusEnum.PASSIVE.name());

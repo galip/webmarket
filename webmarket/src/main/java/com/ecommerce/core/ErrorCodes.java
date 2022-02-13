@@ -1,4 +1,4 @@
-package com.ecommerce.constants;
+package com.ecommerce.core;
 
 import java.io.Serializable;
 

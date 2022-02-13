@@ -87,6 +87,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>webmarket</finalName>
 	</build>
 
 </project>

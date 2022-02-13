@@ -23,6 +23,6 @@ import lombok.Setter;
 public class CreateOrderRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private Long customerId;
+	private long customerId;
 	List<OrderDetailDto> orderDetails;
 }
