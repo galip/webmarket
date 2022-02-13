@@ -57,6 +57,9 @@ public class OrderServiceImpl implements OrderService {
 		orderDetailsDto = request.getOrderDetails();
 
 		for (OrderDetailDto o : orderDetailsDto) {
+			if(o.getQuantity() <= 0) {
+				throw new WebMarketException("QUANTITY_NOT_MORE_THAN_ZERO");
+			}
 			OrderDetail orderDetail = new OrderDetail();
 			orderDetail.setOrder(order);
 			orderDetail.setName(o.getName()); // should be unique product id, name is just for demo.
