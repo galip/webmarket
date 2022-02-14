@@ -18,5 +18,5 @@ import lombok.Setter;
 public class DeleteByOrderIdRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private long id;
+	private Long id;
 }

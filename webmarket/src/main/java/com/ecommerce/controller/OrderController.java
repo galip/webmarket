@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecommerce.constants.ErrorCode;
 import com.ecommerce.core.ErrorCodes;
-import com.ecommerce.exception.WebMarketException;
+import com.ecommerce.exception.OrderNotFoundException;
+import com.ecommerce.exception.WebMarketBusinessException;
+import com.ecommerce.exception.WebMarketRequestException;
 import com.ecommerce.mappers.OrderMapper;
 import com.ecommerce.model.Order;
 import com.ecommerce.request.CreateOrderRequest;
@@ -39,10 +42,10 @@ public class OrderController {
 
 	@GetMapping("/list")
 	@ResponseBody
-	public ResponseEntity<OrdersResponse> findAll() throws WebMarketException {
+	public ResponseEntity<OrdersResponse> findAll() throws WebMarketBusinessException {
 		List<Order> orders = orderService.findAll();
 		if (orders.size() == 0)
-			throw new WebMarketException("ORDER_NOT_FOUND");
+			throw new WebMarketBusinessException(ErrorCode.ORDER_NOT_FOUND);
 		OrdersResponse response = new OrdersResponse();
 		response.setOrders(OrderMapper.convertToDto(orders));
 		response.setResult(ErrorCodes.success());
@@ -52,11 +55,11 @@ public class OrderController {
 	/**
 	 * @param orderId
 	 * @return active(status = 'ACTIVE') order and order details by orderId. 
-	 * @throws WebMarketException
+	 * @throws WebMarketRequestException
 	 */
 	@GetMapping("/detailsByOrderId/{id}")
 	@ResponseBody
-	public ResponseEntity<OrderDetailsByOrderResponse> getOrderDetailsById(@PathVariable Long id) throws WebMarketException {
+	public ResponseEntity<OrderDetailsByOrderResponse> getOrderDetailsById(@PathVariable Long id) throws WebMarketRequestException {
 		OrderValidator.validateId(id);
 		
 		Optional<Order> order = orderService.getOrderDetailsByOrderId(id);
@@ -69,11 +72,12 @@ public class OrderController {
 	/**
 	 * @param request
 	 * @return creates order and order details transactionally.
-	 * @throws WebMarketException
+	 * @throws WebMarketRequestException
+	 * @throws WebMarketBusinessException 
 	 */
 	@PostMapping("/create")
 	@ResponseBody
-	public ResponseEntity<CreateOrderResponse> create(@RequestBody CreateOrderRequest request) throws WebMarketException {
+	public ResponseEntity<CreateOrderResponse> create(@RequestBody CreateOrderRequest request) throws WebMarketBusinessException {
 		OrderValidator.validateCreateOrderRequest(request);
 		
 		Order order = orderService.create(request);
@@ -86,11 +90,12 @@ public class OrderController {
 	/**
 	 * @param request
 	 * @return updates status as PASSIVE in order by id.
-	 * @throws WebMarketException
+	 * @throws WebMarketRequestException
+	 * @throws WebMarketBusinessException 
 	 */
 	@PostMapping("/delete")
 	@ResponseBody
-	public ResponseEntity<BaseResponse> delete(@RequestBody DeleteByOrderIdRequest request) throws WebMarketException {
+	public ResponseEntity<BaseResponse> delete(@RequestBody DeleteByOrderIdRequest request) throws WebMarketBusinessException {
 		OrderValidator.validateDeleteByOrderIdRequest(request);
 		
 		Order order = orderService.delete(request);

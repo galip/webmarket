@@ -18,7 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.ecommerce.dto.OrderDetailDto;
 import com.ecommerce.enums.StatusEnum;
-import com.ecommerce.exception.WebMarketException;
+import com.ecommerce.exception.WebMarketBusinessException;
+import com.ecommerce.exception.WebMarketRequestException;
 import com.ecommerce.model.Order;
 import com.ecommerce.repository.OrderDetailRepository;
 import com.ecommerce.repository.OrderRepository;
@@ -57,7 +58,7 @@ class OrderServiceImplTest {
 	}
 
 	@Test
-	void shouldReturnActiveOrder_whenGetOrderDetailsByOrderId_withValidId() throws WebMarketException {
+	void shouldReturnActiveOrder_whenGetOrderDetailsByOrderId_withValidId() throws WebMarketRequestException {
 		Optional<Order> optionalOrder = orderService.getOrderDetailsByOrderId(order.getId());
 
 		assertEquals(order.getCustomerId(), optionalOrder.get().getCustomerId());
@@ -68,7 +69,7 @@ class OrderServiceImplTest {
 	}
 
 	@Test
-	void shouldReturnCreatedOrder_whenCreate_withValidRequest() throws WebMarketException {
+	void shouldReturnCreatedOrder_whenCreate_withValidRequest() throws WebMarketBusinessException {
 		orderRepository.deleteAll();
 		orderDetailRepository.deleteAll();
 
@@ -96,7 +97,7 @@ class OrderServiceImplTest {
 	}
 
 	@Test
-	void shouldMakeOrderPassive_whenDelete_withValidIdRequest() throws WebMarketException {
+	void shouldMakeOrderPassive_whenDelete_withValidIdRequest() throws WebMarketBusinessException {
 		DeleteByOrderIdRequest request = new DeleteByOrderIdRequest();
 		request.setId(order.getId());
 
