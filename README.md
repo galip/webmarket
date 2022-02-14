@@ -41,6 +41,7 @@ Request;
 ```
 
 Response;
+```json
 {
     "result": {
         "code": "0",
@@ -55,11 +56,13 @@ Response;
         "createdUser": "createSessionUser"
     }
 }
+```
 
 # List order
 http://localhost:9090/order/detailsByOrderId/1
 
 Response;
+```json
 {
     "result": {
         "code": "0",
@@ -90,16 +93,20 @@ Response;
         ]
     }
 }
+```
 
 # Delete order
 http://localhost:9090/order/delete
 
 Request;
+```
 {
     "id": 1
 }
+```
 
 Response;
+```json
 {
     "result": {
         "code": "0",
@@ -116,3 +123,4 @@ Response;
         "updatedUser": "deleteSessionUser"
     }
 }
+```
