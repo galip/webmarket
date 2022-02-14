@@ -1,11 +1,9 @@
 # webmarket
 Web market order demo
 # Pull from docker hub
-
 docker pull galipp/dockerhub:firstwebmarketpush
 
 # Run docker;
-
 docker run -e "SPRING_PROFILES_ACTIVE=dev" -p 9090:8080 galipp/dockerhub:firstwebmarketpush
 
 # H2 for DEV
@@ -16,7 +14,6 @@ username:sa
 password:
 
 # Swagger
-
 http://localhost:9090/swagger-ui/index.html
 http://localhost:9090/dev
 
@@ -56,7 +53,7 @@ Response;
     }
 }
 
-#List order
+# List order
 http://localhost:9090/order/detailsByOrderId/1
 
 Response;
@@ -91,7 +88,7 @@ Response;
     }
 }
 
-#Delete order
+# Delete order
 http://localhost:9090/order/delete
 
 Request;
