@@ -4,11 +4,11 @@ Web market order demo
 docker pull galipp/dockerhub:firstwebmarketpush
 
 # Run docker;
-Dev;
+# Dev;
 docker run -e "SPRING_PROFILES_ACTIVE=dev" -p 9090:8080 galipp/dockerhub:firstwebmarketpush
-Test;
+# Test;
 docker run -e "SPRING_PROFILES_ACTIVE=test" -p 9091:8081 galipp/dockerhub:firstwebmarketpush
-Prod;
+# Prod;
 docker run -e "SPRING_PROFILES_ACTIVE=prod" -p 9092:8082 galipp/dockerhub:firstwebmarketpush
 
 According to docker port mapper above, you can change first ports as you want or use like that, H2 configurations;
