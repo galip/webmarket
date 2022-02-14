@@ -3,7 +3,7 @@ Web market order demo
 # Pull from docker hub
 docker pull galipp/dockerhub:firstwebmarketpush
 
-# Run docker;
+# Run docker
 # Dev;
 docker run -e "SPRING_PROFILES_ACTIVE=dev" -p 9090:8080 galipp/dockerhub:firstwebmarketpush
 # Test;
