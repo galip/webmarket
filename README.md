@@ -21,6 +21,8 @@ http://localhost:9090/dev
 http://localhost:9090/order/create
 
 Request;
+
+```json
 {
     "customerId": 1,
     "orderDetails": [
@@ -36,6 +38,7 @@ Request;
         }
     ]
 }
+```
 
 Response;
 {
