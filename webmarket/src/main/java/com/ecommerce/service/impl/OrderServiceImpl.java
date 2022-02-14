@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ecommerce.constants.ErrorCode;
 import com.ecommerce.dto.OrderDetailDto;
 import com.ecommerce.enums.StatusEnum;
-import com.ecommerce.exception.WebMarketException;
+import com.ecommerce.exception.WebMarketBusinessException;
+import com.ecommerce.exception.WebMarketRequestException;
 import com.ecommerce.model.Order;
 import com.ecommerce.model.OrderDetail;
 import com.ecommerce.repository.OrderDetailRepository;
@@ -42,8 +43,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	@Transactional
-	public Order create(CreateOrderRequest request) throws WebMarketException {
+	@Transactional(rollbackFor = Exception.class)
+	public Order create(CreateOrderRequest request) throws WebMarketBusinessException {
 		Order order = new Order();
 		order.setCustomerId(request.getCustomerId());
 		order.setCreatedUser("createSessionUser");
@@ -59,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
 
 		for (OrderDetailDto o : orderDetailsDto) {
 			if(o.getQuantity() <= 0) {
-				throw new WebMarketException(ErrorCode.QUANTITY_NOT_MORE_THAN_ZERO);
+				throw new WebMarketBusinessException(ErrorCode.QUANTITY_NOT_MORE_THAN_ZERO);
 			}
 			OrderDetail orderDetail = new OrderDetail();
 			orderDetail.setOrder(order);
@@ -75,21 +76,21 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Optional<Order> getOrderDetailsByOrderId(Long id) throws WebMarketException {
+	public Optional<Order> getOrderDetailsByOrderId(Long id) {
 
 		return orderRepository.findByIdAndStatus(id, StatusEnum.ACTIVE.name());
 	}
 
-	private BigDecimal calculateTotalOrderFee(List<OrderDetailDto> orderDetails) throws WebMarketException {
+	private BigDecimal calculateTotalOrderFee(List<OrderDetailDto> orderDetails) {
 		return orderDetails.stream().map(o -> o.getPrice().multiply(BigDecimal.valueOf(o.getQuantity())))
 				.reduce(BigDecimal::add).get();
 	}
 
-	public Order delete(DeleteByOrderIdRequest request) throws WebMarketException {
+	public Order delete(DeleteByOrderIdRequest request) throws WebMarketBusinessException {
 		Optional<Order> o = orderRepository.findByIdAndStatus(request.getId(), StatusEnum.ACTIVE.name());
 		Order order = o.isPresent() ? o.get() : null;
 		if (order == null)
-			throw new WebMarketException(ErrorCode.ORDER_NOT_FOUND);
+			throw new WebMarketBusinessException(ErrorCode.ORDER_NOT_FOUND);
 		order.setUpdatedDate(new Date());
 		order.setUpdatedUser("deleteSessionUser");
 		order.setStatus(StatusEnum.PASSIVE.name());
