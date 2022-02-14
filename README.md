@@ -1,23 +1,26 @@
 # webmarket
 Web market order demo
-#Pull from docker hub
+# Pull from docker hub
+
 docker pull galipp/dockerhub:firstwebmarketpush
 
-#Run docker;
+# Run docker;
+
 docker run -e "SPRING_PROFILES_ACTIVE=dev" -p 9090:8080 galipp/dockerhub:firstwebmarketpush
 
-#H2 for DEV
+# H2 for DEV
 http://localhost:9090/h2-console
 
 db url : jdbc:h2:mem:webmarket-dev
 username:sa
 password:
 
-#Swagger
+# Swagger
+
 http://localhost:9090/swagger-ui/index.html
 http://localhost:9090/dev
 
-#Create order
+# Create order
 http://localhost:9090/order/create
 
 Request;
