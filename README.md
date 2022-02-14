@@ -4,12 +4,32 @@ Web market order demo
 docker pull galipp/dockerhub:firstwebmarketpush
 
 # Run docker;
+Dev;
 docker run -e "SPRING_PROFILES_ACTIVE=dev" -p 9090:8080 galipp/dockerhub:firstwebmarketpush
+Test;
+docker run -e "SPRING_PROFILES_ACTIVE=test" -p 9091:8081 galipp/dockerhub:firstwebmarketpush
+Prod;
+docker run -e "SPRING_PROFILES_ACTIVE=prod" -p 9092:8082 galipp/dockerhub:firstwebmarketpush
 
+According to docker port mapper above, you can change first ports as you want or use like that, H2 configurations;
 # H2 for DEV
 http://localhost:9090/h2-console
 
 db url : jdbc:h2:mem:webmarket-dev
+username:sa
+password:
+
+# H2 FOR TEST
+http://localhost:9091/h2-console
+
+db url : jdbc:h2:mem:webmarket-test
+username:sa
+password:
+
+# H2 FOR PROD
+http://localhost:9092/h2-console
+
+db url : jdbc:h2:mem:webmarket-prod
 username:sa
 password:
 
